@@ -5,59 +5,41 @@
 SetTitleMatchMode(2)
 
 ; Attempt to get the window title of the active PowerPoint window
-getWindowTitle() {
+isPowerPointActive() {
     if WinExist("ahk_class screenClass") || WinActive("PowerPoint Presenter View") {
-        return "PowerPoint Presenter View"
+        return true
     }
-    return ""
+    return false
 }
 
-; Bind to Down Arrow - Advance slide or start presenting from the first slide
+; Only applies the modifications if PowerPoint is active
+#HotIf isPowerPointActive()
+
+; Down Arrow - Advance slide or start presenting from the first slide
 *Down:: {
-    title := getWindowTitle()
-    if (title != "") {
-        ControlSend("{PgDn}", title)
-    } else {
-        Send("{Down}")
-    }
-
+    ControlSend("{PgDn}", "PowerPoint Presenter View")
     return
 }
 
-; Bind to Up Arrow - Go back one slide
+; Up Arrow - Go back one slide
 *Up:: {
-    title := getWindowTitle()
-    if (title != "") {
-        ControlSend("{PgUp}", title)
-    } else {
-        Send("{Up}")
-    }
+    ControlSend("{PgUp}", "PowerPoint Presenter View")
     return
 }
 
-; Ignore Volume Up when a PowerPoint slide show is active
+; Ignore Volume Up
 *Volume_Up:: {
-    title := getWindowTitle()
-    if title == "" {
-        Send("{Volume_Up}")
-    }
     return
 }
 
-; Ignore Volume Down when a PowerPoint slide show is active
+; Ignore Volume Down
 *Volume_Down:: {
-    title := getWindowTitle()
-    if (title == "") {
-        Send("{Volume_Down}")
-    }
     return
 }
 
-; Ignore Tab while powerpoint is open.
+; Ignore Tab
 *Tab:: {
-    title := getWindowTitle()
-    if (title == "") {
-        Send("{Tab}")
-    }
     return
 }
+
+#HotIf
