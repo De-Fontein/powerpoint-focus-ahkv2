@@ -6,7 +6,7 @@ SetTitleMatchMode(2)
 
 ; Attempt to get the window title of the active PowerPoint window
 isPowerPointActive() {
-    if WinExist("ahk_class screenClass") && WinActive("PowerPoint Presenter View") {
+    if WinExist("ahk_class screenClass") && WinExist("PowerPoint Presenter View") {
         return true
     }
     return false
