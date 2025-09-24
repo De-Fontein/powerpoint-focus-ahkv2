@@ -5,13 +5,15 @@
 SetTitleMatchMode(2)
 
 ; Declare globals
-global SCREEN_CLASS := "ahk_class screenClass"
-global POWERPOINT_CLASS := "PowerPoint Presenter View"
+global POWERPOINT_APP := "PowerPoint.Application"
+global PPT_EXE         := "ahk_exe POWERPNT.EXE"
+global SLIDESHOW_CLASS := "ahk_class screenClass"
+global PRESENTER_CLASS := "ahk_class PodiumParent"
 
 try {
     ; Attempt to get the window title of the active PowerPoint window
     isPowerPointActive() {
-        return WinExist(SCREEN_CLASS) && WinExist(POWERPOINT_CLASS)
+        return WinExist(SLIDESHOW_CLASS " " PPT_EXE) && WinExist(PRESENTER_CLASS " " PPT_EXE)
     }
 
     ; Only applies the modifications if PowerPoint is active
@@ -19,13 +21,13 @@ try {
 
     ; Down Arrow - Advance slide or start presenting from the first slide
     *Down:: {
-        ControlSend("{PgDn}", POWERPOINT_CLASS)
+        ComObjActive(POWERPOINT_APP).SlideShowWindows.Item(1).View.Next()
         return
     }
 
     ; Up Arrow - Go back one slide
     *Up:: {
-        ControlSend("{PgUp}", POWERPOINT_CLASS)
+        ComObjActive(POWERPOINT_APP).SlideShowWindows.Item(1).View.Previous()
         return
     }
 
@@ -45,6 +47,6 @@ try {
     }
 
     #HotIf
-} catch error {
-    MsgBox("An error occurred: " error.Message)
+} catch error as e {
+    MsgBox("An error occurred: " e.Message)
 }
